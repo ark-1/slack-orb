@@ -90,14 +90,14 @@ InstallJq() {
 }
 
 BranchFilter() {
-    # If any pattern supplied matches the current branch, proceed; otherwise, exit with message.
+    # If any pattern supplied matches the current branch or the current tag, proceed; otherwise, exit with message.
     FLAG_MATCHES_FILTER="false"
     for i in $(echo "$SLACK_PARAM_BRANCHPATTERN" | sed "s/,/ /g")
     do
-     if echo "$CIRCLE_BRANCH" | grep -Eq "^${i}$" ; then
-        FLAG_MATCHES_FILTER="true"
-        break
-     fi
+        if echo "$CIRCLE_BRANCH" | grep -Eq "^${i}$"  || echo "$CIRCLE_TAG" | grep -Eq "^${i}$" ; then
+            FLAG_MATCHES_FILTER="true"
+            break
+        fi
     done
     if [ "$FLAG_MATCHES_FILTER" = "false" ]; then
         # dont send message.
